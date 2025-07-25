@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
-import 'package:gym_bro/ui/screens/workout_registry/widgets/new_exercise_card.dart';
+import 'package:gym_bro/ui/widgets/exercise_card.dart';
 import 'package:provider/provider.dart';
 
 class Exercises extends StatelessWidget {
@@ -32,7 +32,7 @@ class Exercises extends StatelessWidget {
           children:
               workoutExercises
                   .map(
-                    (workoutExercise) => NewExerciseCard(
+                    (workoutExercise) => ExerciseCard(
                       isEditing: false,
                       weId: workoutExercise.id,
                       workoutId: workoutExercise.workoutId,

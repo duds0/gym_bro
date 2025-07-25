@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
-import 'package:gym_bro/ui/screens/workout_registry/widgets/new_exercise_card.dart';
+import 'package:gym_bro/ui/widgets/exercise_card.dart';
 
 // ignore: must_be_immutable
 class ExercisesEdit extends StatefulWidget {
@@ -38,7 +38,7 @@ class _ExercisesEditState extends State<ExercisesEdit> {
         Column(
           children:
               widget.workoutExercises.map((workoutExercise) {
-                return NewExerciseCard(
+                return ExerciseCard(
                   updateWe: widget.updateWe,
                   isEditing: true,
                   workoutId: workoutExercise.workoutId,

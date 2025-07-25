@@ -7,7 +7,7 @@ import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/workout/widgets/checkbox_card.dart';
 import 'package:gym_bro/ui/screens/workout/widgets/details_card.dart';
 import 'package:gym_bro/ui/screens/workout/widgets/rest_timer.dart';
-import 'package:gym_bro/ui/screens/workout_registry/widgets/new_exercise_card.dart';
+import 'package:gym_bro/ui/widgets/exercise_card.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -241,7 +241,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     workoutExercises
                         .skip(currentIndex + 1)
                         .map(
-                          (we) => NewExerciseCard(
+                          (we) => ExerciseCard(
                             isEditing: false,
                             weId: we.id,
                             exerciseName: we.exerciseName,

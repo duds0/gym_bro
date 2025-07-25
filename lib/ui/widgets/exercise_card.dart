@@ -4,7 +4,7 @@ import 'package:gym_bro/providers/workout_registry_controller.dart';
 import 'package:gym_bro/ui/widgets/formatted_info.dart';
 import 'package:provider/provider.dart';
 
-class NewExerciseCard extends StatelessWidget {
+class ExerciseCard extends StatelessWidget {
   final String? workoutId;
   final bool isEditing;
   final String weId;
@@ -15,7 +15,7 @@ class NewExerciseCard extends StatelessWidget {
   final double restMinutes;
   final Future<void>? updateWe;
 
-  const NewExerciseCard({
+  const ExerciseCard({
     super.key,
     required this.exerciseName,
     required this.series,
