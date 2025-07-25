@@ -3,7 +3,7 @@ import 'package:gym_bro/models/workout_exercise.dart';
 import 'package:gym_bro/ui/widgets/exercise_card.dart';
 
 // ignore: must_be_immutable
-class ExercisesEdit extends StatefulWidget {
+class ExercisesEdit extends StatelessWidget {
   final String workoutId;
   List<WorkoutExercise> workoutExercises;
   final Future<void> updateWe;
@@ -15,11 +15,6 @@ class ExercisesEdit extends StatefulWidget {
     required this.updateWe,
   });
 
-  @override
-  State<ExercisesEdit> createState() => _ExercisesEditState();
-}
-
-class _ExercisesEditState extends State<ExercisesEdit> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -37,9 +32,9 @@ class _ExercisesEditState extends State<ExercisesEdit> {
         SizedBox(height: 16),
         Column(
           children:
-              widget.workoutExercises.map((workoutExercise) {
+              workoutExercises.map((workoutExercise) {
                 return ExerciseCard(
-                  updateWe: widget.updateWe,
+                  updateWe: updateWe,
                   isEditing: true,
                   workoutId: workoutExercise.workoutId,
                   exerciseName: workoutExercise.exerciseName,

@@ -3,6 +3,8 @@ import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
 import 'package:gym_bro/database/repositories/workout_repository.dart';
 import 'package:gym_bro/models/workout.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
+import 'package:gym_bro/providers/exercise_edit_controller.dart';
+import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/workout_edit/widgets/exercises_edit.dart';
 import 'package:gym_bro/ui/screens/workout_registry/widgets/basics_informations.dart';
@@ -30,22 +32,6 @@ class _WorkoutEditState extends State<WorkoutEdit> {
   final TextEditingController _workoutNameController = TextEditingController();
   final TextEditingController _workoutFrequencyController =
       TextEditingController();
-  final TextEditingController _exerciseNameController = TextEditingController();
-  final TextEditingController _exerciseSeriesController =
-      TextEditingController();
-  final TextEditingController _exerciseRepsController = TextEditingController();
-  final TextEditingController _exerciseWeightController =
-      TextEditingController();
-  final TextEditingController _exerciseRestTimeController =
-      TextEditingController();
-
-  void clearExerciseTextFields() {
-    _exerciseNameController.clear();
-    _exerciseSeriesController.clear();
-    _exerciseRepsController.clear();
-    _exerciseWeightController.clear();
-    _exerciseRestTimeController.clear();
-  }
 
   Future<void> getWe() async {
     final we = await Provider.of<WorkoutExerciseRepository>(
@@ -75,15 +61,22 @@ class _WorkoutEditState extends State<WorkoutEdit> {
   }
 
   Future<void> increaseExercise() async {
+    final textControllers = Provider.of<ExerciseEditController>(
+      context,
+      listen: false,
+    );
+
     final WorkoutExercise exercise = WorkoutExercise(
       id: uuid.v4(),
       workoutId: widget.workoutId,
-      exerciseName: _exerciseNameController.text,
+      exerciseName: textControllers.exerciseNameController.text,
       exerciseOrderIndex: workoutExercises.length + 1,
-      series: int.parse(_exerciseSeriesController.text),
-      repetitions: _exerciseRepsController.text,
-      weight: double.parse(_exerciseWeightController.text),
-      restMinutes: double.parse(_exerciseRestTimeController.text),
+      series: int.parse(textControllers.exerciseSeriesController.text),
+      repetitions: textControllers.exerciseRepsController.text,
+      weight: double.parse(textControllers.exerciseWeightController.text),
+      restMinutes: double.parse(
+        textControllers.exerciseRestTimeController.text,
+      ),
     );
 
     await Provider.of<WorkoutExerciseRepository>(
@@ -122,6 +115,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    final textControllers = Provider.of<ExerciseEditController>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text("Editar Treino")),
@@ -140,21 +134,62 @@ class _WorkoutEditState extends State<WorkoutEdit> {
 
               NewExercise(
                 formKey: _newExerciseFormKey,
-                exerciseNameController: _exerciseNameController,
-                exerciseSeriesController: _exerciseSeriesController,
-                exerciseRepsController: _exerciseRepsController,
-                exerciseWeightController: _exerciseWeightController,
-                exerciseRestTimeController: _exerciseRestTimeController,
+                exerciseNameController: textControllers.exerciseNameController,
+                exerciseSeriesController:
+                    textControllers.exerciseSeriesController,
+                exerciseRepsController: textControllers.exerciseRepsController,
+                exerciseWeightController:
+                    textControllers.exerciseWeightController,
+                exerciseRestTimeController:
+                    textControllers.exerciseRestTimeController,
               ),
 
               SizedBox(height: 32),
 
               InkWell(
                 onTap: () async {
-                  if (_newExerciseFormKey.currentState!.validate()) {
-                    await increaseExercise();
-                    setState(() {});
-                    clearExerciseTextFields();
+                  if (textControllers.isEditing) {
+                    if (_newExerciseFormKey.currentState!.validate()) {
+                      final WorkoutExercise? weId =
+                          await Provider.of<WorkoutExerciseRepository>(
+                            context,
+                            listen: false,
+                          ).getById(textControllers.workoutExerciseId);
+                      final int weOrderIndex = weId!.exerciseOrderIndex;
+
+                      Provider.of<WorkoutExerciseProvider>(
+                        context,
+                        listen: false,
+                      ).update(
+                        WorkoutExercise(
+                          id: textControllers.workoutExerciseId,
+                          workoutId: widget.workoutId,
+                          exerciseName:
+                              textControllers.exerciseNameController.text,
+                          exerciseOrderIndex: weOrderIndex,
+                          series: int.parse(
+                            textControllers.exerciseSeriesController.text,
+                          ),
+                          repetitions:
+                              textControllers.exerciseRepsController.text,
+                          weight: double.parse(
+                            textControllers.exerciseWeightController.text,
+                          ),
+                          restMinutes: double.parse(
+                            textControllers.exerciseRestTimeController.text,
+                          ),
+                        ),
+                      );
+
+                      textControllers.clearExerciseTextFields();
+                      textControllers.setIsEditing();
+                    }
+                  } else {
+                    if (_newExerciseFormKey.currentState!.validate()) {
+                      await increaseExercise();
+                      setState(() {});
+                      textControllers.clearExerciseTextFields();
+                    }
                   }
                 },
                 child: Container(
@@ -166,7 +201,9 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    "Adicionar Exercício",
+                    textControllers.isEditing
+                        ? "Salvar Exercício"
+                        : "Adicionar Exercício",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,

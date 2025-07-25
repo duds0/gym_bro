@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
+import 'package:gym_bro/providers/exercise_edit_controller.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
 import 'package:gym_bro/ui/widgets/formatted_info.dart';
 import 'package:provider/provider.dart';
@@ -42,9 +43,27 @@ class ExerciseCard extends StatelessWidget {
         icon: Icon(Icons.delete_rounded, color: Colors.red.shade400),
       );
     } else {
+      final textControllers = Provider.of<ExerciseEditController>(
+        context,
+        listen: false,
+      );
       return Row(
         children: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit_rounded)),
+          IconButton(
+            onPressed: () {
+              textControllers.exerciseNameController.text = exerciseName;
+              textControllers.exerciseSeriesController.text = series.toString();
+              textControllers.exerciseRepsController.text = reps;
+              textControllers.exerciseWeightController.text = weight.toString();
+              textControllers.exerciseRestTimeController.text =
+                  restMinutes.toString();
+
+              textControllers.setWeId(weId);
+
+              textControllers.setIsEditing();
+            },
+            icon: Icon(Icons.edit_rounded),
+          ),
 
           IconButton(
             onPressed: () async {
