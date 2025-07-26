@@ -97,8 +97,6 @@ class _WorkoutEditState extends State<WorkoutEdit> {
         frequencyThisWeek: actualWorkout!.frequencyThisWeek,
       ),
     );
-
-    Navigator.pop(context);
   }
 
   Future<void> updateWe() async {
@@ -119,108 +117,136 @@ class _WorkoutEditState extends State<WorkoutEdit> {
 
     return Scaffold(
       appBar: AppBar(title: Text("Editar Treino")),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            children: [
-              BasicsInformations(
-                formKey: _basicsInformationsFormKey,
-                workoutNameController: _workoutNameController,
-                workoutFrequencyController: _workoutFrequencyController,
-              ),
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
 
-              SizedBox(height: 40),
-
-              NewExercise(
-                formKey: _newExerciseFormKey,
-                exerciseNameController: textControllers.exerciseNameController,
-                exerciseSeriesController:
-                    textControllers.exerciseSeriesController,
-                exerciseRepsController: textControllers.exerciseRepsController,
-                exerciseWeightController:
-                    textControllers.exerciseWeightController,
-                exerciseRestTimeController:
-                    textControllers.exerciseRestTimeController,
-              ),
-
-              SizedBox(height: 32),
-
-              InkWell(
-                onTap: () async {
-                  if (textControllers.isEditing) {
-                    if (_newExerciseFormKey.currentState!.validate()) {
-                      final WorkoutExercise? weId =
-                          await Provider.of<WorkoutExerciseRepository>(
-                            context,
-                            listen: false,
-                          ).getById(textControllers.workoutExerciseId);
-                      final int weOrderIndex = weId!.exerciseOrderIndex;
-
-                      Provider.of<WorkoutExerciseProvider>(
-                        context,
-                        listen: false,
-                      ).update(
-                        WorkoutExercise(
-                          id: textControllers.workoutExerciseId,
-                          workoutId: widget.workoutId,
-                          exerciseName:
-                              textControllers.exerciseNameController.text,
-                          exerciseOrderIndex: weOrderIndex,
-                          series: int.parse(
-                            textControllers.exerciseSeriesController.text,
-                          ),
-                          repetitions:
-                              textControllers.exerciseRepsController.text,
-                          weight: double.parse(
-                            textControllers.exerciseWeightController.text,
-                          ),
-                          restMinutes: double.parse(
-                            textControllers.exerciseRestTimeController.text,
-                          ),
-                        ),
-                      );
-
-                      textControllers.clearExerciseTextFields();
-                      textControllers.setIsEditing();
-                    }
-                  } else {
-                    if (_newExerciseFormKey.currentState!.validate()) {
-                      await increaseExercise();
-                      setState(() {});
-                      textControllers.clearExerciseTextFields();
-                    }
-                  }
-                },
-                child: Container(
-                  width: screenWidth * 0.7,
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
+          if (workoutExercises.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.grey.shade900,
+                content: Text(
+                  'Adicione pelo menos um exercício',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    textControllers.isEditing
-                        ? "Salvar Exercício"
-                        : "Adicionar Exercício",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                ),
+                duration: Duration(seconds: 4),
+              ),
+            );
+          } else {
+            await updateWorkout(context);
+            Navigator.pop(context);
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              children: [
+                BasicsInformations(
+                  formKey: _basicsInformationsFormKey,
+                  workoutNameController: _workoutNameController,
+                  workoutFrequencyController: _workoutFrequencyController,
+                ),
+
+                SizedBox(height: 40),
+
+                NewExercise(
+                  formKey: _newExerciseFormKey,
+                  exerciseNameController:
+                      textControllers.exerciseNameController,
+                  exerciseSeriesController:
+                      textControllers.exerciseSeriesController,
+                  exerciseRepsController:
+                      textControllers.exerciseRepsController,
+                  exerciseWeightController:
+                      textControllers.exerciseWeightController,
+                  exerciseRestTimeController:
+                      textControllers.exerciseRestTimeController,
+                ),
+
+                SizedBox(height: 32),
+
+                InkWell(
+                  onTap: () async {
+                    if (textControllers.isEditing) {
+                      if (_newExerciseFormKey.currentState!.validate()) {
+                        final WorkoutExercise? weId =
+                            await Provider.of<WorkoutExerciseRepository>(
+                              context,
+                              listen: false,
+                            ).getById(textControllers.workoutExerciseId);
+                        final int weOrderIndex = weId!.exerciseOrderIndex;
+
+                        Provider.of<WorkoutExerciseProvider>(
+                          context,
+                          listen: false,
+                        ).update(
+                          WorkoutExercise(
+                            id: textControllers.workoutExerciseId,
+                            workoutId: widget.workoutId,
+                            exerciseName:
+                                textControllers.exerciseNameController.text,
+                            exerciseOrderIndex: weOrderIndex,
+                            series: int.parse(
+                              textControllers.exerciseSeriesController.text,
+                            ),
+                            repetitions:
+                                textControllers.exerciseRepsController.text,
+                            weight: double.parse(
+                              textControllers.exerciseWeightController.text,
+                            ),
+                            restMinutes: double.parse(
+                              textControllers.exerciseRestTimeController.text,
+                            ),
+                          ),
+                        );
+
+                        textControllers.clearExerciseTextFields();
+                        textControllers.setIsEditing();
+                      }
+                    } else {
+                      if (_newExerciseFormKey.currentState!.validate()) {
+                        await increaseExercise();
+                        setState(() {});
+                        textControllers.clearExerciseTextFields();
+                      }
+                    }
+                  },
+                  child: Container(
+                    width: screenWidth * 0.7,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      textControllers.isEditing
+                          ? "Salvar Exercício"
+                          : "Adicionar Exercício",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              SizedBox(height: 32),
+                SizedBox(height: 32),
 
-              ExercisesEdit(
-                workoutId: widget.workoutId,
-                workoutExercises: workoutExercises,
-                updateWe: updateWe(),
-              ),
-            ],
+                ExercisesEdit(
+                  workoutId: widget.workoutId,
+                  workoutExercises: workoutExercises,
+                  updateWe: updateWe(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -243,6 +269,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
             );
           } else {
             await updateWorkout(context);
+            Navigator.pop(context);
           }
         },
         child: Container(
