@@ -20,6 +20,8 @@ class NumberTextField extends StatelessWidget {
         validator: (value) {
           if (value!.isEmpty) {
             return 'Campo Obrigatório';
+          } else if (value == "0") {
+            return 'Inválido';
           }
           return null;
         },
