@@ -4,12 +4,14 @@ class MyTextField extends StatelessWidget {
   final double width;
   final String label;
   final TextEditingController controller;
+  final TextInputType? inputType;
 
   const MyTextField({
     super.key,
     required this.width,
     required this.label,
     required this.controller,
+    this.inputType,
   });
 
   @override
@@ -17,6 +19,7 @@ class MyTextField extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextFormField(
+        keyboardType: inputType,
         validator: (value) {
           if (value!.isEmpty) {
             return 'Campo Obrigatório';

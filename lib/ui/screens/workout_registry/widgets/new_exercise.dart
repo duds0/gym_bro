@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gym_bro/ui/widgets/my_text_field.dart';
 import 'package:gym_bro/ui/widgets/number_text_field.dart';
 
@@ -53,6 +54,7 @@ class NewExercise extends StatelessWidget {
                       width: screenWidth * 0.2,
                       label: "Descanso",
                       controller: exerciseRestTimeController,
+                      allowPoints: true,
                     ),
                   ],
                 ),
@@ -66,15 +68,17 @@ class NewExercise extends StatelessWidget {
                       label: "Séries",
                       controller: exerciseSeriesController,
                     ),
-                    NumberTextField(
+                    MyTextField(
                       width: screenWidth * 0.24,
                       label: "Repetições",
                       controller: exerciseRepsController,
+                      inputType: TextInputType.number,
                     ),
                     NumberTextField(
                       width: screenWidth * 0.24,
                       label: "Peso",
                       controller: exerciseWeightController,
+                      allowPoints: true,
                     ),
                   ],
                 ),
