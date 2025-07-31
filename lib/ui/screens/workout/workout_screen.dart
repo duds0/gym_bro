@@ -43,6 +43,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     seriesDone = List.filled(workoutExercises.first.series, false);
   }
 
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      final start = currentIndex + 1;
+
+      int from = start + oldIndex;
+      int to = start + newIndex;
+      if (to > from) to -= 1;
+
+      final item = workoutExercises.removeAt(from);
+      workoutExercises.insert(to, item);
+    });
+  }
+
   @override
   void initState() {
     getWorkoutExercises();
@@ -236,22 +249,27 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              Column(
-                children:
-                    workoutExercises
-                        .skip(currentIndex + 1)
-                        .map(
-                          (we) => ExerciseCard(
-                            isEditing: false,
-                            weId: we.id,
-                            exerciseName: we.exerciseName,
-                            series: we.series,
-                            reps: we.repetitions,
-                            weight: we.weight,
-                            restMinutes: we.restMinutes,
-                          ),
-                        )
-                        .toList(),
+              ReorderableListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                onReorder: _onReorder,
+                children: [
+                  for (
+                    int i = currentIndex + 1;
+                    i < workoutExercises.length;
+                    i++
+                  )
+                    ExerciseCard(
+                      key: ValueKey(workoutExercises[i].id),
+                      isEditing: false,
+                      weId: workoutExercises[i].id,
+                      exerciseName: workoutExercises[i].exerciseName,
+                      series: workoutExercises[i].series,
+                      reps: workoutExercises[i].repetitions,
+                      weight: workoutExercises[i].weight,
+                      restMinutes: workoutExercises[i].restMinutes,
+                    ),
+                ],
               ),
             ],
           ),

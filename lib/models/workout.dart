@@ -1,7 +1,7 @@
 class Workout {
   final String id;
   final String name;
-  final int orderIndex;
+  int orderIndex;
   final int frequency;
   int frequencyThisWeek;
 
