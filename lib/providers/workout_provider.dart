@@ -12,6 +12,9 @@ class WorkoutProvider extends ChangeNotifier {
 
   Future<void> loadAll() async {
     _workouts = await repository.getAll();
+
+    _workouts.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
     notifyListeners();
   }
 
