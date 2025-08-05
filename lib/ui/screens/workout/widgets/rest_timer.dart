@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class RestTimer extends StatefulWidget {
@@ -9,33 +10,61 @@ class RestTimer extends StatefulWidget {
   State<RestTimer> createState() => _RestTimerState();
 }
 
-class _RestTimerState extends State<RestTimer> {
-  late int _timeLeft;
+class _RestTimerState extends State<RestTimer> with WidgetsBindingObserver {
+  late DateTime _endTime;
+  late Duration _totalDuration;
+  late Duration _timeLeft;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _timeLeft = (widget.restMinutes * 60).round();
+    WidgetsBinding.instance.addObserver(this);
+
+    _totalDuration = Duration(seconds: (widget.restMinutes * 60).round());
+    _endTime = DateTime.now().add(_totalDuration);
+    _timeLeft = _totalDuration;
+
     _startTimer();
   }
 
   void _startTimer() {
-    Future.doWhile(() async {
-      if (_timeLeft > 0) {
-        await Future.delayed(const Duration(seconds: 1));
-        if (mounted) {
-          setState(() => _timeLeft--);
-        }
-        return true;
-      } else {
-        return false;
-      }
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateTime();
     });
+  }
+
+  void _updateTime() {
+    final now = DateTime.now();
+    final diff = _endTime.difference(now);
+
+    setState(() {
+      _timeLeft = diff.isNegative ? Duration.zero : diff;
+    });
+
+    if (_timeLeft == Duration.zero) {
+      _timer?.cancel();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _updateTime();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double percent = _timeLeft / (widget.restMinutes * 60);
+    final double percent = _timeLeft.inSeconds / _totalDuration.inSeconds;
 
     return Dialog(
       backgroundColor: Colors.black45,
@@ -45,63 +74,57 @@ class _RestTimerState extends State<RestTimer> {
           tween: Tween(begin: percent, end: percent),
           duration: const Duration(milliseconds: 500),
           builder: (context, value, child) {
-            return Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Colors.transparent),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: 170,
-                        height: 170,
-                        child: CircularProgressIndicator(
-                          value: value,
-                          strokeWidth: 6,
-                          backgroundColor: Colors.grey.shade800,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      ),
-
-                      Text(
-                        '${(_timeLeft ~/ 60).toString().padLeft(2, '0')}:${(_timeLeft % 60).toString().padLeft(2, '0')}',
-                        style: const TextStyle(
-                          fontSize: 36,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "Concluir",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: 170,
+                      height: 170,
+                      child: CircularProgressIndicator(
+                        value: value,
+                        strokeWidth: 6,
+                        backgroundColor: Colors.grey.shade800,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.white,
                         ),
                       ),
                     ),
+                    Text(
+                      '${_timeLeft.inMinutes.toString().padLeft(2, '0')}:${(_timeLeft.inSeconds % 60).toString().padLeft(2, '0')}',
+                      style: const TextStyle(
+                        fontSize: 36,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      "Concluir",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),
