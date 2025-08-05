@@ -54,6 +54,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final item = workoutExercises.removeAt(from);
       workoutExercises.insert(to, item);
     });
+
+    seriesDone = List.filled(workoutExercises[currentIndex].series, false);
   }
 
   @override
@@ -73,7 +75,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       );
     }
 
-    final firstExercise = workoutExercises[currentIndex];
+    WorkoutExercise firstExercise = workoutExercises[currentIndex];
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.workoutName)),
@@ -268,6 +270,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       reps: workoutExercises[i].repetitions,
                       weight: workoutExercises[i].weight,
                       restMinutes: workoutExercises[i].restMinutes,
+                      exerciseSwap: () {
+                        setState(() {
+                          final temp = workoutExercises[currentIndex];
+                          workoutExercises[currentIndex] = workoutExercises[i];
+                          workoutExercises[i] = temp;
+                        });
+
+                        seriesDone = List.filled(
+                          workoutExercises[currentIndex].series,
+                          false,
+                        );
+                      },
                     ),
                 ],
               ),

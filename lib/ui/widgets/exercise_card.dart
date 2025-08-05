@@ -15,6 +15,7 @@ class ExerciseCard extends StatelessWidget {
   final double weight;
   final double restMinutes;
   final Future<void>? updateWe;
+  final void Function()? exerciseSwap;
 
   const ExerciseCard({
     super.key,
@@ -27,11 +28,15 @@ class ExerciseCard extends StatelessWidget {
     required this.weId,
     required this.isEditing,
     this.updateWe,
+    this.exerciseSwap,
   });
 
   Widget iconController(BuildContext context) {
     if (workoutId == null && isEditing == false) {
-      return SizedBox();
+      return IconButton(
+        onPressed: exerciseSwap,
+        icon: Icon(Icons.swap_horiz_rounded, size: 32),
+      );
     } else if (workoutId != null && isEditing == false) {
       return IconButton(
         onPressed: () {
@@ -93,6 +98,8 @@ class ExerciseCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Icon(Icons.menu_rounded, size: 32),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
