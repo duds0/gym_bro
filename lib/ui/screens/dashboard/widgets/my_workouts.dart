@@ -74,12 +74,14 @@ class MyWorkouts extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4),
             children: [
               for (int i = 0; i < workouts.length; i++)
-                WorkoutCard(
-                  key: ValueKey(workouts[i].id),
-                  index: i,
-                  workoutName: workouts[i].name,
-                  workoutId: workouts[i].id,
-                ),
+                workouts[i].frequencyThisWeek >= workouts[i].frequency
+                    ? SizedBox(key: ValueKey(key))
+                    : WorkoutCard(
+                      key: ValueKey(workouts[i].id),
+                      index: i,
+                      workoutName: workouts[i].name,
+                      workoutId: workouts[i].id,
+                    ),
             ],
           ),
         ),
