@@ -33,6 +33,7 @@ class _ExercisesState extends State<Exercises> {
         workoutExercises.isEmpty
             ? SizedBox()
             : ReorderableListView(
+              physics: ScrollPhysics(),
               buildDefaultDragHandles: false,
               shrinkWrap: true,
               children: [

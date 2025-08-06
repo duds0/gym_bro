@@ -250,11 +250,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     final item = workoutExercises.removeAt(from);
                     workoutExercises.insert(to, item);
                   });
-
-                  seriesDone = List.filled(
-                    workoutExercises[currentIndex].series,
-                    false,
-                  );
                 },
                 children: [
                   for (
