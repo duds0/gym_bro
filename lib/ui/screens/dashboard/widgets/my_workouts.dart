@@ -55,6 +55,7 @@ class MyWorkouts extends StatelessWidget {
         const SizedBox(height: 8),
         Expanded(
           child: ReorderableListView(
+            buildDefaultDragHandles: false,
             onReorder: (oldIndex, newIndex) async {
               if (newIndex > oldIndex) newIndex -= 1;
               final item = workouts.removeAt(oldIndex);
@@ -71,18 +72,15 @@ class MyWorkouts extends StatelessWidget {
               }
             },
             padding: const EdgeInsets.only(top: 4),
-            children:
-                workouts.map((workout) {
-                  if (workout.frequencyThisWeek < workout.frequency) {
-                    return WorkoutCard(
-                      key: ValueKey(workout.id),
-                      workoutName: workout.name,
-                      workoutId: workout.id,
-                    );
-                  } else {
-                    return SizedBox(key: ValueKey('empty-${workout.id}'));
-                  }
-                }).toList(),
+            children: [
+              for (int i = 0; i < workouts.length; i++)
+                WorkoutCard(
+                  key: ValueKey(workouts[i].id),
+                  index: i,
+                  workoutName: workouts[i].name,
+                  workoutId: workouts[i].id,
+                ),
+            ],
           ),
         ),
       ],
