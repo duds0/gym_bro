@@ -43,21 +43,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     seriesDone = List.filled(workoutExercises.first.series, false);
   }
 
-  void _onReorder(int oldIndex, int newIndex) {
-    setState(() {
-      final start = currentIndex + 1;
-
-      int from = start + oldIndex;
-      int to = start + newIndex;
-      if (to > from) to -= 1;
-
-      final item = workoutExercises.removeAt(from);
-      workoutExercises.insert(to, item);
-    });
-
-    seriesDone = List.filled(workoutExercises[currentIndex].series, false);
-  }
-
   @override
   void initState() {
     getWorkoutExercises();
@@ -253,28 +238,63 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               SizedBox(height: 16),
               ReorderableListView(
                 shrinkWrap: true,
+                buildDefaultDragHandles: false,
                 physics: NeverScrollableScrollPhysics(),
-                onReorder: _onReorder,
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    int from = (currentIndex + 1) + oldIndex;
+                    int to = (currentIndex + 1) + newIndex;
+
+                    if (to > from) to--;
+
+                    final item = workoutExercises.removeAt(from);
+                    workoutExercises.insert(to, item);
+                  });
+
+                  seriesDone = List.filled(
+                    workoutExercises[currentIndex].series,
+                    false,
+                  );
+                },
                 children: [
                   for (
-                    int i = currentIndex + 1;
-                    i < workoutExercises.length;
-                    i++
+                    int relativeIndex = 0;
+                    relativeIndex <
+                        workoutExercises.length - (currentIndex + 1);
+                    relativeIndex++
                   )
                     ExerciseCard(
-                      key: ValueKey(workoutExercises[i].id),
+                      key: ValueKey(
+                        workoutExercises[currentIndex + 1 + relativeIndex].id,
+                      ),
                       isEditing: false,
-                      weId: workoutExercises[i].id,
-                      exerciseName: workoutExercises[i].exerciseName,
-                      series: workoutExercises[i].series,
-                      reps: workoutExercises[i].repetitions,
-                      weight: workoutExercises[i].weight,
-                      restMinutes: workoutExercises[i].restMinutes,
+                      index: relativeIndex,
+                      weId:
+                          workoutExercises[currentIndex + 1 + relativeIndex].id,
+                      exerciseName:
+                          workoutExercises[currentIndex + 1 + relativeIndex]
+                              .exerciseName,
+                      series:
+                          workoutExercises[currentIndex + 1 + relativeIndex]
+                              .series,
+                      reps:
+                          workoutExercises[currentIndex + 1 + relativeIndex]
+                              .repetitions,
+                      weight:
+                          workoutExercises[currentIndex + 1 + relativeIndex]
+                              .weight,
+                      restMinutes:
+                          workoutExercises[currentIndex + 1 + relativeIndex]
+                              .restMinutes,
                       exerciseSwap: () {
                         setState(() {
                           final temp = workoutExercises[currentIndex];
-                          workoutExercises[currentIndex] = workoutExercises[i];
-                          workoutExercises[i] = temp;
+                          workoutExercises[currentIndex] =
+                              workoutExercises[currentIndex +
+                                  1 +
+                                  relativeIndex];
+                          workoutExercises[currentIndex + 1 + relativeIndex] =
+                              temp;
                         });
 
                         seriesDone = List.filled(

@@ -13,6 +13,7 @@ class WorkoutManager extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Editor de Treino")),
       body: ReorderableListView(
+        buildDefaultDragHandles: false,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         onReorder: (oldIndex, newIndex) async {
           if (newIndex > oldIndex) newIndex -= 1;
@@ -29,16 +30,15 @@ class WorkoutManager extends StatelessWidget {
             await workoutRepository.update(workout);
           }
         },
-        children:
-            workouts
-                .map(
-                  (workout) => WorkoutEditCard(
-                    key: ValueKey(workout.id),
-                    workoutName: workout.name,
-                    workoutId: workout.id,
-                  ),
-                )
-                .toList(),
+        children: [
+          for (int i = 0; i < workouts.length; i++)
+            WorkoutEditCard(
+              workoutId: workouts[i].id,
+              workoutName: workouts[i].name,
+              index: i,
+              key: ValueKey(workouts[i].id),
+            ),
+        ],
       ),
     );
   }

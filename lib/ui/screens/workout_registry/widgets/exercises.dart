@@ -4,18 +4,20 @@ import 'package:gym_bro/providers/workout_registry_controller.dart';
 import 'package:gym_bro/ui/widgets/exercise_card.dart';
 import 'package:provider/provider.dart';
 
-class Exercises extends StatelessWidget {
+class Exercises extends StatefulWidget {
   const Exercises({super.key});
 
+  @override
+  State<Exercises> createState() => _ExercisesState();
+}
+
+class _ExercisesState extends State<Exercises> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    List<WorkoutExercise> workoutExercises =
-        Provider.of<WorkoutRegistryController>(
-          context,
-          listen: false,
-        ).workoutExercises;
+    var controller = Provider.of<WorkoutRegistryController>(context);
+    List<WorkoutExercise> workoutExercises = controller.workoutExercises;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,23 +30,39 @@ class Exercises extends StatelessWidget {
           ),
         ),
         SizedBox(height: 16),
-        Column(
-          children:
-              workoutExercises
-                  .map(
-                    (workoutExercise) => ExerciseCard(
-                      isEditing: false,
-                      weId: workoutExercise.id,
-                      workoutId: workoutExercise.workoutId,
-                      exerciseName: workoutExercise.exerciseName,
-                      series: workoutExercise.series,
-                      reps: workoutExercise.repetitions,
-                      weight: workoutExercise.weight,
-                      restMinutes: workoutExercise.restMinutes,
-                    ),
-                  )
-                  .toList(),
-        ),
+        workoutExercises.isEmpty
+            ? SizedBox()
+            : ReorderableListView(
+              buildDefaultDragHandles: false,
+              shrinkWrap: true,
+              children: [
+                for (int i = 0; i < workoutExercises.length; i++)
+                  ExerciseCard(
+                    key: ValueKey(workoutExercises[i].id),
+                    exerciseName: workoutExercises[i].exerciseName,
+                    series: workoutExercises[i].series,
+                    reps: workoutExercises[i].repetitions,
+                    weight: workoutExercises[i].weight,
+                    restMinutes: workoutExercises[i].restMinutes,
+                    weId: workoutExercises[i].id,
+                    isEditing: false,
+                    index: i,
+                  ),
+              ],
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) newIndex -= 1;
+                  final item = workoutExercises.removeAt(oldIndex);
+                  workoutExercises.insert(newIndex, item);
+                });
+
+                for (int i = 0; i < workoutExercises.length; i++) {
+                  final workoutExercise = workoutExercises[i];
+                  workoutExercise.exerciseOrderIndex = i;
+                }
+                controller.updateWorkoutExercises(workoutExercises);
+              },
+            ),
       ],
     );
   }

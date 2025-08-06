@@ -242,7 +242,6 @@ class _WorkoutEditState extends State<WorkoutEdit> {
 
                 ExercisesEdit(
                   workoutId: widget.workoutId,
-                  workoutExercises: workoutExercises,
                   updateWe: updateWe(),
                 ),
               ],

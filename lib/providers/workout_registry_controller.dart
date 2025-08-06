@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
 
 class WorkoutRegistryController extends ChangeNotifier {
-  final List<WorkoutExercise> _workoutExercises = [];
+  List<WorkoutExercise> _workoutExercises = [];
 
   List<WorkoutExercise> get workoutExercises => _workoutExercises;
 
@@ -18,5 +18,11 @@ class WorkoutRegistryController extends ChangeNotifier {
 
   void registrationCompleted() {
     _workoutExercises.clear();
+  }
+
+  void updateWorkoutExercises(List<WorkoutExercise> newOrder) {
+    _workoutExercises.clear;
+    _workoutExercises = newOrder;
+    notifyListeners();
   }
 }

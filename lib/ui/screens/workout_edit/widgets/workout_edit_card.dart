@@ -6,11 +6,13 @@ import 'package:provider/provider.dart';
 class WorkoutEditCard extends StatelessWidget {
   final String workoutId;
   final String workoutName;
+  final int index;
 
   const WorkoutEditCard({
     super.key,
     required this.workoutId,
     required this.workoutName,
+    required this.index,
   });
 
   @override
@@ -28,9 +30,12 @@ class WorkoutEditCard extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(Icons.menu_rounded, size: 32),
+              ReorderableDelayedDragStartListener(
+                index: index,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(Icons.menu_rounded, size: 32),
+                ),
               ),
 
               SizedBox(width: 10),

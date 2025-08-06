@@ -6,7 +6,7 @@ import 'package:gym_bro/ui/widgets/formatted_info.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseCard extends StatelessWidget {
-  final String? workoutId;
+  final int index;
   final bool isEditing;
   final String weId;
   final String exerciseName;
@@ -14,6 +14,7 @@ class ExerciseCard extends StatelessWidget {
   final String reps;
   final double weight;
   final double restMinutes;
+  final String? workoutId;
   final Future<void>? updateWe;
   final void Function()? exerciseSwap;
 
@@ -24,20 +25,21 @@ class ExerciseCard extends StatelessWidget {
     required this.reps,
     required this.weight,
     required this.restMinutes,
-    this.workoutId,
     required this.weId,
     required this.isEditing,
+    required this.index,
+    this.workoutId,
     this.updateWe,
     this.exerciseSwap,
   });
 
   Widget iconController(BuildContext context) {
-    if (workoutId == null && isEditing == false) {
+    if (workoutId == null && exerciseSwap != null) {
       return IconButton(
         onPressed: exerciseSwap,
         icon: Icon(Icons.swap_horiz_rounded, size: 32),
       );
-    } else if (workoutId != null && isEditing == false) {
+    } else if (workoutId == null && isEditing == false) {
       return IconButton(
         onPressed: () {
           Provider.of<WorkoutRegistryController>(
@@ -45,7 +47,7 @@ class ExerciseCard extends StatelessWidget {
             listen: false,
           ).decrease(weId);
         },
-        icon: Icon(Icons.delete_rounded, color: Colors.red.shade400),
+        icon: Icon(Icons.delete_rounded, color: Colors.red.shade300),
       );
     } else {
       final textControllers = Provider.of<ExerciseEditController>(
@@ -79,7 +81,7 @@ class ExerciseCard extends StatelessWidget {
 
               await updateWe;
             },
-            icon: Icon(Icons.delete_rounded, color: Colors.red.shade400),
+            icon: Icon(Icons.delete_rounded, color: Colors.red.shade300),
           ),
         ],
       );
@@ -98,7 +100,10 @@ class ExerciseCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.menu_rounded, size: 32),
+          ReorderableDelayedDragStartListener(
+            index: index,
+            child: Icon(Icons.menu_rounded, size: 32),
+          ),
           SizedBox(width: 16),
           Expanded(
             child: Column(

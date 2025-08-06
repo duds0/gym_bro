@@ -2,7 +2,7 @@ class WorkoutExercise {
   final String id;
   final String workoutId;
   final String exerciseName;
-  final int exerciseOrderIndex;
+  int exerciseOrderIndex;
   final int series;
   final String repetitions;
   final double weight;

@@ -117,61 +117,74 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
 
     return Scaffold(
       appBar: AppBar(title: Text("Novo Treino")),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            children: [
-              BasicsInformations(
-                formKey: _basicsInformationsFormKey,
-                workoutNameController: _workoutNameController,
-                workoutFrequencyController: _workoutFrequencyController,
-              ),
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
 
-              SizedBox(height: 40),
+          Provider.of<WorkoutRegistryController>(
+            context,
+            listen: false,
+          ).registrationCompleted();
 
-              NewExercise(
-                formKey: _newExerciseFormKey,
-                exerciseNameController: _exerciseNameController,
-                exerciseSeriesController: _exerciseSeriesController,
-                exerciseRepsController: _exerciseRepsController,
-                exerciseWeightController: _exerciseWeightController,
-                exerciseRestTimeController: _exerciseRestTimeController,
-              ),
+          Navigator.pop(context);
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              children: [
+                BasicsInformations(
+                  formKey: _basicsInformationsFormKey,
+                  workoutNameController: _workoutNameController,
+                  workoutFrequencyController: _workoutFrequencyController,
+                ),
 
-              SizedBox(height: 32),
+                SizedBox(height: 40),
 
-              InkWell(
-                onTap: () async {
-                  if (_newExerciseFormKey.currentState!.validate()) {
-                    await increaseExercise();
-                    setState(() {});
-                    clearExerciseTextFields();
-                  }
-                },
-                child: Container(
-                  width: screenWidth * 0.7,
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    "Adicionar Exercício",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                NewExercise(
+                  formKey: _newExerciseFormKey,
+                  exerciseNameController: _exerciseNameController,
+                  exerciseSeriesController: _exerciseSeriesController,
+                  exerciseRepsController: _exerciseRepsController,
+                  exerciseWeightController: _exerciseWeightController,
+                  exerciseRestTimeController: _exerciseRestTimeController,
+                ),
+
+                SizedBox(height: 32),
+
+                InkWell(
+                  onTap: () async {
+                    if (_newExerciseFormKey.currentState!.validate()) {
+                      await increaseExercise();
+                      setState(() {});
+                      clearExerciseTextFields();
+                    }
+                  },
+                  child: Container(
+                    width: screenWidth * 0.7,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      "Adicionar Exercício",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              SizedBox(height: 40),
+                SizedBox(height: 40),
 
-              Exercises(),
-            ],
+                Exercises(),
+              ],
+            ),
           ),
         ),
       ),
