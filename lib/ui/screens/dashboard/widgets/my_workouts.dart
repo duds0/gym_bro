@@ -75,7 +75,7 @@ class MyWorkouts extends StatelessWidget {
             children: [
               for (int i = 0; i < workouts.length; i++)
                 workouts[i].frequencyThisWeek >= workouts[i].frequency
-                    ? SizedBox(key: ValueKey(key))
+                    ? SizedBox(key: ValueKey(workouts[i].id))
                     : WorkoutCard(
                       key: ValueKey(workouts[i].id),
                       index: i,
