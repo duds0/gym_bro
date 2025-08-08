@@ -36,6 +36,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       listen: false,
     ).getByWorkoutId(widget.workoutId);
 
+    if (workoutExercisesList.isEmpty) return;
+
     setState(() {
       workoutExercises = workoutExercisesList;
     });
@@ -56,7 +58,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (workoutExercises.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.workoutName)),
-        body: SizedBox(),
+        body: Center(
+          child: Text(
+            "Seu treino está vazio :(",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+        ),
       );
     }
 

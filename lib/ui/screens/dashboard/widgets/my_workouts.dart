@@ -27,16 +27,18 @@ class MyWorkouts extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  onPressed:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WorkoutManager(),
-                        ),
-                      ),
-                  icon: Icon(Icons.edit_rounded),
-                ),
+                workouts.isEmpty
+                    ? SizedBox()
+                    : IconButton(
+                      onPressed:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WorkoutManager(),
+                            ),
+                          ),
+                      icon: Icon(Icons.edit_rounded),
+                    ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -53,38 +55,46 @@ class MyWorkouts extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Expanded(
-          child: ReorderableListView(
-            buildDefaultDragHandles: false,
-            onReorder: (oldIndex, newIndex) async {
-              if (newIndex > oldIndex) newIndex -= 1;
-              final item = workouts.removeAt(oldIndex);
-              workouts.insert(newIndex, item);
+        workouts.isEmpty
+            ? Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                "Crie um treino primeiro!",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            )
+            : Expanded(
+              child: ReorderableListView(
+                buildDefaultDragHandles: false,
+                onReorder: (oldIndex, newIndex) async {
+                  if (newIndex > oldIndex) newIndex -= 1;
+                  final item = workouts.removeAt(oldIndex);
+                  workouts.insert(newIndex, item);
 
-              final WorkoutProvider workoutRepository =
-                  Provider.of<WorkoutProvider>(context, listen: false);
+                  final WorkoutProvider workoutRepository =
+                      Provider.of<WorkoutProvider>(context, listen: false);
 
-              for (int i = 0; i < workouts.length; i++) {
-                final workout = workouts[i];
-                workout.orderIndex = i;
+                  for (int i = 0; i < workouts.length; i++) {
+                    final workout = workouts[i];
+                    workout.orderIndex = i;
 
-                await workoutRepository.update(workout);
-              }
-            },
-            padding: const EdgeInsets.only(top: 4),
-            children: [
-              for (int i = 0; i < workouts.length; i++)
-                workouts[i].frequencyThisWeek >= workouts[i].frequency
-                    ? SizedBox(key: ValueKey(workouts[i].id))
-                    : WorkoutCard(
-                      key: ValueKey(workouts[i].id),
-                      index: i,
-                      workoutName: workouts[i].name,
-                      workoutId: workouts[i].id,
-                    ),
-            ],
-          ),
-        ),
+                    await workoutRepository.update(workout);
+                  }
+                },
+                padding: const EdgeInsets.only(top: 4),
+                children: [
+                  for (int i = 0; i < workouts.length; i++)
+                    workouts[i].frequencyThisWeek >= workouts[i].frequency
+                        ? SizedBox(key: ValueKey(workouts[i].id))
+                        : WorkoutCard(
+                          key: ValueKey(workouts[i].id),
+                          index: i,
+                          workoutName: workouts[i].name,
+                          workoutId: workouts[i].id,
+                        ),
+                ],
+              ),
+            ),
       ],
     );
   }

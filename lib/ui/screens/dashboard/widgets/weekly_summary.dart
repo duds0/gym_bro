@@ -30,17 +30,23 @@ class _WeeklySummaryState extends State<WeeklySummary> {
   }
 
   Widget congratulationsCheck() {
-    if (workoutsDone(widget.workouts) >= workoutsQtd(widget.workouts)) {
-      return Text(
-        "Você concluiu todos os treinos",
-        style: TextStyle(fontWeight: FontWeight.w500),
-      );
+    final total = workoutsQtd(widget.workouts);
+    final done = workoutsDone(widget.workouts);
+    final remaining = total - done;
+
+    String message;
+
+    if (total == 0) {
+      message = "Seja bem vindo(a)! 👋🏻";
+    } else if (remaining == 0) {
+      message = "Você concluiu todos os treinos! 😮‍💨";
+    } else if (remaining == 1) {
+      message = "Resta apenas 1 treino, tá perto!";
     } else {
-      return Text(
-        "Restam ${workoutsQtd(widget.workouts) - workoutsDone(widget.workouts)} treinos, vamos lá!",
-        style: TextStyle(fontWeight: FontWeight.w500),
-      );
+      message = "Restam $remaining treinos, vamos lá!";
     }
+
+    return Text(message, style: TextStyle(fontWeight: FontWeight.w500));
   }
 
   @override
