@@ -79,10 +79,10 @@ class _WorkoutEditState extends State<WorkoutEdit> {
       ),
     );
 
-    await Provider.of<WorkoutExerciseRepository>(
+    await Provider.of<WorkoutExerciseProvider>(
       context,
       listen: false,
-    ).create(exercise);
+    ).add(exercise, widget.workoutId);
 
     await getWe();
   }
@@ -139,6 +139,10 @@ class _WorkoutEditState extends State<WorkoutEdit> {
             );
           } else {
             await updateWorkout(context);
+            textControllers.clearExerciseTextFields();
+            if (textControllers.isEditing) {
+              textControllers.setIsEditing();
+            }
             Navigator.pop(context);
           }
         },
@@ -180,7 +184,30 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                               context,
                               listen: false,
                             ).getById(textControllers.workoutExerciseId);
-                        final int weOrderIndex = weId!.exerciseOrderIndex;
+
+                        if (weId == null) {
+                          textControllers.clearExerciseTextFields();
+                          textControllers.setIsEditing();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Colors.grey.shade900,
+                              content: Text(
+                                'Exercício não encontrado',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              duration: Duration(seconds: 4),
+                            ),
+                          );
+
+                          return;
+                        }
+
+                        final int weOrderIndex = weId.exerciseOrderIndex;
 
                         Provider.of<WorkoutExerciseProvider>(
                           context,
@@ -204,6 +231,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                               textControllers.exerciseRestTimeController.text,
                             ),
                           ),
+                          widget.workoutId,
                         );
 
                         textControllers.clearExerciseTextFields();
@@ -268,6 +296,10 @@ class _WorkoutEditState extends State<WorkoutEdit> {
             );
           } else {
             await updateWorkout(context);
+            textControllers.clearExerciseTextFields();
+            if (textControllers.isEditing) {
+              textControllers.setIsEditing();
+            }
             Navigator.pop(context);
           }
         },

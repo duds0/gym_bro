@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
 import 'package:gym_bro/providers/exercise_edit_controller.dart';
+import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
 import 'package:gym_bro/ui/widgets/formatted_info.dart';
 import 'package:provider/provider.dart';
@@ -58,26 +58,45 @@ class ExerciseCard extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              textControllers.exerciseNameController.text = exerciseName;
-              textControllers.exerciseSeriesController.text = series.toString();
-              textControllers.exerciseRepsController.text = reps;
-              textControllers.exerciseWeightController.text = weight.toString();
-              textControllers.exerciseRestTimeController.text =
-                  restMinutes.toString();
+              if (!textControllers.isEditing) {
+                textControllers.exerciseNameController.text = exerciseName;
+                textControllers.exerciseSeriesController.text =
+                    series.toString();
+                textControllers.exerciseRepsController.text = reps;
+                textControllers.exerciseWeightController.text =
+                    weight.toString();
+                textControllers.exerciseRestTimeController.text =
+                    restMinutes.toString();
 
-              textControllers.setWeId(weId);
+                textControllers.setWeId(weId);
 
-              textControllers.setIsEditing();
+                textControllers.setIsEditing();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.grey.shade900,
+                    content: Text(
+                      'Conclua a edição',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    duration: Duration(seconds: 4),
+                  ),
+                );
+              }
             },
             icon: Icon(Icons.edit_rounded),
           ),
 
           IconButton(
             onPressed: () async {
-              await Provider.of<WorkoutExerciseRepository>(
+              await Provider.of<WorkoutExerciseProvider>(
                 context,
                 listen: false,
-              ).deleteItem(weId);
+              ).remove(weId, workoutId!);
 
               await updateWe;
             },

@@ -5,31 +5,32 @@ import '../models/workout_exercise.dart';
 class WorkoutExerciseProvider extends ChangeNotifier {
   final WorkoutExerciseRepository repository;
 
-  List<WorkoutExercise> _workoutExercises = [];
-  List<WorkoutExercise> get workoutExercises => _workoutExercises;
+  List<WorkoutExercise> _weByWorkoutId = [];
+  List<WorkoutExercise> get weByWorkoutId => _weByWorkoutId;
 
   WorkoutExerciseProvider({required this.repository});
 
-  Future<void> loadAll() async {
-    _workoutExercises = await repository.getAll();
+  Future<void> getByWorkoutId(String id) async {
+    final List<WorkoutExercise> we = await repository.getByWorkoutId(id);
+    _weByWorkoutId = we;
     notifyListeners();
   }
 
-  Future<void> add(WorkoutExercise item) async {
+  Future<void> add(WorkoutExercise item, String workoutId) async {
     await repository.create(item);
-    await loadAll();
+    getByWorkoutId(workoutId);
     notifyListeners();
   }
 
-  Future<void> update(WorkoutExercise item) async {
+  Future<void> update(WorkoutExercise item, String workoutId) async {
     await repository.updateItem(item);
-    await loadAll();
+    getByWorkoutId(workoutId);
     notifyListeners();
   }
 
-  Future<void> remove(String id) async {
+  Future<void> remove(String id, String workoutId) async {
     await repository.deleteItem(id);
-    await loadAll();
+    getByWorkoutId(workoutId);
     notifyListeners();
   }
 }

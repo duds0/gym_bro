@@ -72,7 +72,7 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
     await workoutRepo.add(workout);
 
     for (final we in workoutExercise) {
-      await workoutExerciseRepo.add(we);
+      await workoutExerciseRepo.add(we, workoutId);
     }
 
     Provider.of<WorkoutRegistryController>(

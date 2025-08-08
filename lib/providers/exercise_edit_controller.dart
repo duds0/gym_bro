@@ -43,14 +43,4 @@ class ExerciseEditController extends ChangeNotifier {
   void setWeId(String weId) {
     _workoutExerciseId = weId;
   }
-
-  @override
-  void dispose() {
-    _exerciseNameController.dispose();
-    _exerciseSeriesController.dispose();
-    _exerciseRepsController.dispose();
-    _exerciseWeightController.dispose();
-    _exerciseRestTimeController.dispose();
-    super.dispose();
-  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
+import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/ui/widgets/exercise_card.dart';
 import 'package:provider/provider.dart';
 
@@ -19,29 +20,22 @@ class ExercisesEdit extends StatefulWidget {
 }
 
 class _ExercisesEditState extends State<ExercisesEdit> {
-  List<WorkoutExercise> workoutExercises = [];
-
-  Future<void> getWe() async {
-    final List<WorkoutExercise> we =
-        await Provider.of<WorkoutExerciseRepository>(
-          context,
-          listen: false,
-        ).getByWorkoutId(widget.workoutId);
-
-    setState(() {
-      workoutExercises = we;
-    });
-  }
-
   @override
   void initState() {
-    getWe();
+    Future.microtask(
+      () => Provider.of<WorkoutExerciseProvider>(
+        context,
+        listen: false,
+      ).getByWorkoutId(widget.workoutId),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    List<WorkoutExercise> workoutExercises =
+        Provider.of<WorkoutExerciseProvider>(context).weByWorkoutId;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

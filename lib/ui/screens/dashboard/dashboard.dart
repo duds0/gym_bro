@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/dashboard/widgets/my_workouts.dart';
 import 'package:gym_bro/ui/screens/dashboard/widgets/weekly_summary.dart';
+import 'package:gym_bro/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -23,6 +24,11 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Utils.deleteDatabaseFile();
+        },
+      ),
       appBar: AppBar(title: Text("Bom dia, Preguicinha!"), centerTitle: false),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
