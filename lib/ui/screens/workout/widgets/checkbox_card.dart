@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CheckboxCard extends StatefulWidget {
+class CheckboxCard extends StatelessWidget {
   final int serie;
   final String reps;
   final double weight;
@@ -17,11 +17,6 @@ class CheckboxCard extends StatefulWidget {
     required this.onChanged,
   });
 
-  @override
-  State<CheckboxCard> createState() => _CheckboxCardState();
-}
-
-class _CheckboxCardState extends State<CheckboxCard> {
   final TextStyle serieIsDoneTextStyle = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
@@ -48,22 +43,22 @@ class _CheckboxCardState extends State<CheckboxCard> {
             children: [
               Checkbox(
                 activeColor: Colors.white,
-                value: widget.isDone,
-                onChanged: widget.onChanged,
+                value: isDone,
+                onChanged: onChanged,
               ),
               Text(
-                "${widget.serie}ª Série",
+                "$serieª Série",
                 style:
-                    widget.isDone
+                    isDone
                         ? serieIsDoneTextStyle
                         : TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ],
           ),
           Text(
-            "${widget.reps} @ ${widget.weight}Kg",
+            "$reps @ ${weight}Kg",
             style:
-                widget.isDone
+                isDone
                     ? infoIsDoneTextStyle
                     : TextStyle(fontWeight: FontWeight.w500),
           ),

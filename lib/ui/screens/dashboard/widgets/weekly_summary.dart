@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/models/workout.dart';
 
-class WeeklySummary extends StatefulWidget {
+class WeeklySummary extends StatelessWidget {
   final List<Workout> workouts;
 
   const WeeklySummary({super.key, required this.workouts});
-
-  @override
-  State<WeeklySummary> createState() => _WeeklySummaryState();
-}
-
-class _WeeklySummaryState extends State<WeeklySummary> {
-  double progressIndicator = 0;
 
   int workoutsQtd(List<Workout> workouts) {
     int numOfWorkouts = 0;
@@ -30,8 +23,8 @@ class _WeeklySummaryState extends State<WeeklySummary> {
   }
 
   Widget congratulationsCheck() {
-    final total = workoutsQtd(widget.workouts);
-    final done = workoutsDone(widget.workouts);
+    final total = workoutsQtd(workouts);
+    final done = workoutsDone(workouts);
     final remaining = total - done;
 
     String message;
@@ -74,10 +67,9 @@ class _WeeklySummaryState extends State<WeeklySummary> {
                 Expanded(
                   child: LinearProgressIndicator(
                     value:
-                        workoutsQtd(widget.workouts) == 0
+                        workoutsQtd(workouts) == 0
                             ? 0
-                            : workoutsDone(widget.workouts) /
-                                workoutsQtd(widget.workouts),
+                            : workoutsDone(workouts) / workoutsQtd(workouts),
 
                     backgroundColor: Colors.black,
                     color: Colors.white,
@@ -86,7 +78,7 @@ class _WeeklySummaryState extends State<WeeklySummary> {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  "${workoutsDone(widget.workouts)}/${workoutsQtd(widget.workouts)}",
+                  "${workoutsDone(workouts)}/${workoutsQtd(workouts)}",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ],
