@@ -16,11 +16,11 @@ class WorkoutExerciseRepository extends BaseRepository<WorkoutExercise> {
     return map != null ? WorkoutExercise.fromMap(map) : null;
   }
 
-  Future<int> updateItem(WorkoutExercise we) {
+  Future<int> updateWe(WorkoutExercise we) {
     return update(we.id, we.toMap());
   }
 
-  Future<int> deleteItem(String id) => delete(id);
+  Future<int> deleteWe(String id) => delete(id);
 
   Future<List<WorkoutExercise>> getByWorkoutId(String workoutId) async {
     final dbClient = await db;

@@ -26,7 +26,7 @@ class _ExercisesEditState extends State<ExercisesEdit> {
       () => Provider.of<WorkoutExerciseProvider>(
         context,
         listen: false,
-      ).getByWorkoutId(widget.workoutId),
+      ).getWorkoutExercises(widget.workoutId),
     );
     super.initState();
   }
@@ -35,7 +35,7 @@ class _ExercisesEditState extends State<ExercisesEdit> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     List<WorkoutExercise> workoutExercises =
-        Provider.of<WorkoutExerciseProvider>(context).weByWorkoutId;
+        Provider.of<WorkoutExerciseProvider>(context).workoutExercises;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _ExercisesEditState extends State<ExercisesEdit> {
             }
 
             for (final we in workoutExercises) {
-              await workoutExerciseRepo.updateItem(we);
+              await workoutExerciseRepo.updateWe(we);
             }
           },
         ),
