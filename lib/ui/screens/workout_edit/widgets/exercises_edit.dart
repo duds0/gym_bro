@@ -60,7 +60,7 @@ class _ExercisesEditState extends State<ExercisesEdit> {
                 series: workoutExercises[i].series,
                 reps: workoutExercises[i].repetitions,
                 weight: workoutExercises[i].weight,
-                restMinutes: workoutExercises[i].restMinutes,
+                restSeconds: workoutExercises[i].restSeconds,
                 weId: workoutExercises[i].id,
                 workoutId: workoutExercises[i].workoutId,
                 updateWe: widget.updateWe,

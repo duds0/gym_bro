@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gym_bro/providers/timer_picker_controller.dart';
 import 'package:gym_bro/ui/widgets/my_text_field.dart';
 import 'package:gym_bro/ui/widgets/number_text_field.dart';
+import 'package:gym_bro/ui/widgets/time_picker.dart';
 
 class NewExercise extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -8,7 +10,7 @@ class NewExercise extends StatelessWidget {
   final TextEditingController exerciseSeriesController;
   final TextEditingController exerciseRepsController;
   final TextEditingController exerciseWeightController;
-  final TextEditingController exerciseRestTimeController;
+  final TimerPickerController timerPickerController;
 
   const NewExercise({
     super.key,
@@ -16,13 +18,14 @@ class NewExercise extends StatelessWidget {
     required this.exerciseSeriesController,
     required this.exerciseRepsController,
     required this.exerciseWeightController,
-    required this.exerciseRestTimeController,
+    required this.timerPickerController,
     required this.formKey,
   });
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Form(
       key: formKey,
@@ -42,25 +45,30 @@ class NewExercise extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     MyTextField(
-                      width: screenWidth * 0.6,
+                      width: screenWidth * 0.52,
                       label: "Nome do Exercício",
                       controller: exerciseNameController,
                     ),
-                    NumberTextField(
-                      width: screenWidth * 0.2,
-                      label: "Descanso",
-                      controller: exerciseRestTimeController,
-                      allowPoints: true,
+                    // NumberTextField(
+                    //   width: screenWidth * 0.2,
+                    //   label: "Descanso",
+                    //   controller: exerciseRestTimeController,
+                    //   allowPoints: true,
+                    // ),
+                    TimePicker(
+                      timerPickerController: timerPickerController,
+                      width: screenWidth * 0.32,
+                      timerPickerHeight: screenHeight * 0.4,
                     ),
                   ],
                 ),
                 SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     NumberTextField(
                       width: screenWidth * 0.24,

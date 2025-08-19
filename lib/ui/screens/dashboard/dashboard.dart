@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/dashboard/widgets/my_workouts.dart';

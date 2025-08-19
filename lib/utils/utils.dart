@@ -5,6 +5,13 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
 class Utils {
+  static String formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final minutes = twoDigits(d.inMinutes);
+    final seconds = twoDigits(d.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
   static Future<void> resetWorkouts() async {
     final dbHelper = DatabaseHelper();
     final List<Workout> allWorkouts =

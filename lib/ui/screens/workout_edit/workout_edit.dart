@@ -4,6 +4,7 @@ import 'package:gym_bro/database/repositories/workout_repository.dart';
 import 'package:gym_bro/models/workout.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
 import 'package:gym_bro/providers/exercise_edit_controller.dart';
+import 'package:gym_bro/providers/timer_picker_controller.dart';
 import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/workout_edit/widgets/exercises_edit.dart';
@@ -66,6 +67,9 @@ class _WorkoutEditState extends State<WorkoutEdit> {
       listen: false,
     );
 
+    final TimerPickerController timerPickerController =
+        Provider.of<TimerPickerController>(context, listen: false);
+
     final WorkoutExercise exercise = WorkoutExercise(
       id: uuid.v4(),
       workoutId: widget.workoutId,
@@ -74,9 +78,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
       series: int.parse(textControllers.exerciseSeriesController.text),
       repetitions: textControllers.exerciseRepsController.text,
       weight: double.parse(textControllers.exerciseWeightController.text),
-      restMinutes: double.parse(
-        textControllers.exerciseRestTimeController.text,
-      ),
+      restSeconds: timerPickerController.timerPicked.inSeconds,
     );
 
     await Provider.of<WorkoutExerciseProvider>(
@@ -114,6 +116,8 @@ class _WorkoutEditState extends State<WorkoutEdit> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     final textControllers = Provider.of<ExerciseEditController>(context);
+    final TimerPickerController timerPickerController =
+        Provider.of<TimerPickerController>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text("Editar Treino")),
@@ -143,6 +147,8 @@ class _WorkoutEditState extends State<WorkoutEdit> {
             if (textControllers.isEditing) {
               textControllers.setIsEditing();
             }
+            timerPickerController.resetTimerPicked();
+
             Navigator.pop(context);
           }
         },
@@ -169,8 +175,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                       textControllers.exerciseRepsController,
                   exerciseWeightController:
                       textControllers.exerciseWeightController,
-                  exerciseRestTimeController:
-                      textControllers.exerciseRestTimeController,
+                  timerPickerController: timerPickerController,
                 ),
 
                 SizedBox(height: 32),
@@ -227,13 +232,13 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                             weight: double.parse(
                               textControllers.exerciseWeightController.text,
                             ),
-                            restMinutes: double.parse(
-                              textControllers.exerciseRestTimeController.text,
-                            ),
+                            restSeconds:
+                                timerPickerController.timerPicked.inSeconds,
                           ),
                           widget.workoutId,
                         );
 
+                        timerPickerController.resetTimerPicked();
                         textControllers.clearExerciseTextFields();
                         textControllers.setIsEditing();
                       }
@@ -242,6 +247,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                         await increaseExercise();
                         setState(() {});
                         textControllers.clearExerciseTextFields();
+                        timerPickerController.resetTimerPicked();
                       }
                     }
                   },
@@ -300,6 +306,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
             if (textControllers.isEditing) {
               textControllers.setIsEditing();
             }
+            timerPickerController.resetTimerPicked();
             Navigator.pop(context);
           }
         },

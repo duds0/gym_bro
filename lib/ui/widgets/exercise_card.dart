@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_bro/providers/exercise_edit_controller.dart';
+import 'package:gym_bro/providers/timer_picker_controller.dart';
 import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
 import 'package:gym_bro/ui/widgets/formatted_info.dart';
+import 'package:gym_bro/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseCard extends StatelessWidget {
@@ -13,7 +15,7 @@ class ExerciseCard extends StatelessWidget {
   final int series;
   final String reps;
   final double weight;
-  final double restMinutes;
+  final int restSeconds;
   final String? workoutId;
   final Future<void>? updateWe;
   final void Function()? exerciseSwap;
@@ -24,7 +26,7 @@ class ExerciseCard extends StatelessWidget {
     required this.series,
     required this.reps,
     required this.weight,
-    required this.restMinutes,
+    required this.restSeconds,
     required this.weId,
     required this.isEditing,
     required this.index,
@@ -54,6 +56,10 @@ class ExerciseCard extends StatelessWidget {
         context,
         listen: false,
       );
+
+      final TimerPickerController timerPickerController =
+          Provider.of<TimerPickerController>(context, listen: false);
+
       return Row(
         children: [
           IconButton(
@@ -65,8 +71,10 @@ class ExerciseCard extends StatelessWidget {
                 textControllers.exerciseRepsController.text = reps;
                 textControllers.exerciseWeightController.text =
                     weight.toString();
-                textControllers.exerciseRestTimeController.text =
-                    restMinutes.toString();
+
+                timerPickerController.setTimerPicked(
+                  Duration(seconds: restSeconds),
+                );
 
                 textControllers.setWeId(weId);
 
@@ -142,7 +150,11 @@ class ExerciseCard extends StatelessWidget {
                     ),
                     FormattedInfo(title: "Reps:", content: "$reps,"),
                     FormattedInfo(title: "Peso:", content: "${weight}Kg,"),
-                    FormattedInfo(title: "Desc:", content: "${restMinutes}min"),
+                    FormattedInfo(
+                      title: "Desc:",
+                      content:
+                          "${Utils.formatDuration(Duration(seconds: restSeconds))}min",
+                    ),
                   ],
                 ),
               ],

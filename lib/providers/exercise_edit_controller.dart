@@ -7,8 +7,7 @@ class ExerciseEditController extends ChangeNotifier {
   final TextEditingController _exerciseRepsController = TextEditingController();
   final TextEditingController _exerciseWeightController =
       TextEditingController();
-  final TextEditingController _exerciseRestTimeController =
-      TextEditingController();
+
   late String _workoutExerciseId;
 
   bool _isEditing = false;
@@ -19,8 +18,6 @@ class ExerciseEditController extends ChangeNotifier {
   TextEditingController get exerciseRepsController => _exerciseRepsController;
   TextEditingController get exerciseWeightController =>
       _exerciseWeightController;
-  TextEditingController get exerciseRestTimeController =>
-      _exerciseRestTimeController;
 
   bool get isEditing => _isEditing;
 
@@ -31,7 +28,6 @@ class ExerciseEditController extends ChangeNotifier {
     _exerciseSeriesController.clear();
     _exerciseRepsController.clear();
     _exerciseWeightController.clear();
-    _exerciseRestTimeController.clear();
     _workoutExerciseId = "";
     notifyListeners();
   }

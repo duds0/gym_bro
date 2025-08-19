@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class RestTimer extends StatefulWidget {
-  final double restMinutes;
+  /// Agora recebemos o tempo de descanso em MILISSEGUNDOS
+  final int restTimeMs;
 
-  const RestTimer({super.key, required this.restMinutes});
+  const RestTimer({super.key, required this.restTimeMs});
 
   @override
   State<RestTimer> createState() => _RestTimerState();
@@ -21,7 +22,8 @@ class _RestTimerState extends State<RestTimer> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    _totalDuration = Duration(seconds: (widget.restMinutes * 60).round());
+    // Converte o valor inteiro vindo do banco em Duration
+    _totalDuration = Duration(seconds: widget.restTimeMs);
     _endTime = DateTime.now().add(_totalDuration);
     _timeLeft = _totalDuration;
 

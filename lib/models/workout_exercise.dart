@@ -6,7 +6,7 @@ class WorkoutExercise {
   final int series;
   final String repetitions;
   final double weight;
-  final double restMinutes;
+  final int restSeconds;
 
   WorkoutExercise({
     required this.id,
@@ -16,7 +16,7 @@ class WorkoutExercise {
     required this.series,
     required this.repetitions,
     required this.weight,
-    required this.restMinutes,
+    required this.restSeconds,
   });
 
   factory WorkoutExercise.fromMap(Map<String, dynamic> map) => WorkoutExercise(
@@ -27,7 +27,7 @@ class WorkoutExercise {
     series: map['series'],
     repetitions: map['repetitions'],
     weight: map['weight'],
-    restMinutes: map['rest_minutes'],
+    restSeconds: map['rest_minutes'],
   );
 
   Map<String, dynamic> toMap() => {
@@ -38,10 +38,10 @@ class WorkoutExercise {
     'series': series,
     'repetitions': repetitions,
     'weight': weight,
-    'rest_minutes': restMinutes,
+    'rest_minutes': restSeconds,
   };
 
   @override
   String toString() =>
-      'WorkoutExercise(id: $id, workoutId: $workoutId, exerciseName: $exerciseName, exerciseOrderIndex: $exerciseOrderIndex, series: $series, reps: $repetitions, weight: $weight, rest: $restMinutes)';
+      'WorkoutExercise(id: $id, workoutId: $workoutId, exerciseName: $exerciseName, exerciseOrderIndex: $exerciseOrderIndex, series: $series, reps: $repetitions, weight: $weight, rest: $restSeconds)';
 }

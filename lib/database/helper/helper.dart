@@ -43,7 +43,7 @@ class DatabaseHelper {
         series INTEGER NOT NULL,
         repetitions TEXT NOT NULL,
         weight REAL,
-        rest_minutes REAL,
+        rest_seconds INTEGER,
         FOREIGN KEY (workout_id) REFERENCES workout(id)
       );
     ''');

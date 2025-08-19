@@ -3,6 +3,7 @@ import 'package:gym_bro/database/helper/helper.dart';
 import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
 import 'package:gym_bro/database/repositories/workout_repository.dart';
 import 'package:gym_bro/providers/exercise_edit_controller.dart';
+import 'package:gym_bro/providers/timer_picker_controller.dart';
 import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
         // Controllers Específicos
         ChangeNotifierProvider(create: (_) => WorkoutRegistryController()),
         ChangeNotifierProvider(create: (_) => ExerciseEditController()),
+        ChangeNotifierProvider(create: (_) => TimerPickerController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_bro/database/repositories/workout_exercise_repository.dart';
 import 'package:gym_bro/models/workout.dart';
 import 'package:gym_bro/models/workout_exercise.dart';
+import 'package:gym_bro/providers/timer_picker_controller.dart';
 import 'package:gym_bro/providers/workout_exercise_provider.dart';
 import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/providers/workout_registry_controller.dart';
@@ -37,15 +38,12 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
   final TextEditingController _exerciseRepsController = TextEditingController();
   final TextEditingController _exerciseWeightController =
       TextEditingController();
-  final TextEditingController _exerciseRestTimeController =
-      TextEditingController();
 
   void clearExerciseTextFields() {
     _exerciseNameController.clear();
     _exerciseSeriesController.clear();
     _exerciseRepsController.clear();
     _exerciseWeightController.clear();
-    _exerciseRestTimeController.clear();
   }
 
   Future<void> saveWorkout(
@@ -84,6 +82,12 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
   }
 
   Future<void> increaseExercise() async {
+    final int restTime =
+        Provider.of<TimerPickerController>(
+          context,
+          listen: false,
+        ).timerPicked.inSeconds;
+
     List<WorkoutExercise> exercisesOfThisWorkout =
         await Provider.of<WorkoutExerciseRepository>(
           context,
@@ -103,7 +107,7 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
         series: int.parse(_exerciseSeriesController.text),
         repetitions: _exerciseRepsController.text,
         weight: double.parse(_exerciseWeightController.text),
-        restMinutes: double.parse(_exerciseRestTimeController.text),
+        restSeconds: restTime,
       ),
     );
   }
@@ -114,6 +118,9 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
 
     List<WorkoutExercise> workoutExercises =
         Provider.of<WorkoutRegistryController>(context).workoutExercises;
+
+    final TimerPickerController timerPickerController =
+        Provider.of<TimerPickerController>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text("Novo Treino")),
@@ -126,6 +133,8 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
             context,
             listen: false,
           ).registrationCompleted();
+
+          timerPickerController.resetTimerPicked();
 
           Navigator.pop(context);
         },
@@ -148,7 +157,7 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
                   exerciseSeriesController: _exerciseSeriesController,
                   exerciseRepsController: _exerciseRepsController,
                   exerciseWeightController: _exerciseWeightController,
-                  exerciseRestTimeController: _exerciseRestTimeController,
+                  timerPickerController: timerPickerController,
                 ),
 
                 SizedBox(height: 32),
@@ -156,9 +165,27 @@ class _WorkoutRegistryState extends State<WorkoutRegistry> {
                 InkWell(
                   onTap: () async {
                     if (_newExerciseFormKey.currentState!.validate()) {
+                      if (timerPickerController.timerPicked.inSeconds == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.grey.shade900,
+                            content: Text(
+                              'Defina o tempo de descanso',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                            duration: Duration(seconds: 4),
+                          ),
+                        );
+                        return;
+                      }
                       await increaseExercise();
                       setState(() {});
                       clearExerciseTextFields();
+                      timerPickerController.resetTimerPicked();
                     }
                   },
                   child: Container(

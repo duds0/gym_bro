@@ -8,6 +8,7 @@ import 'package:gym_bro/ui/screens/workout/widgets/checkbox_card.dart';
 import 'package:gym_bro/ui/screens/workout/widgets/details_card.dart';
 import 'package:gym_bro/ui/screens/workout/widgets/rest_timer.dart';
 import 'package:gym_bro/ui/widgets/exercise_card.dart';
+import 'package:gym_bro/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -127,7 +128,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                   ),
                   DetailsCard(
                     description: "Descanso",
-                    value: "${firstExercise.restMinutes}min",
+                    value:
+                        "${Utils.formatDuration(Duration(seconds: firstExercise.restSeconds))}min",
                   ),
                 ],
               ),
@@ -151,7 +153,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           barrierDismissible: false,
                           builder:
                               (_) => RestTimer(
-                                restMinutes: firstExercise.restMinutes,
+                                restTimeMs: firstExercise.restSeconds,
                               ),
                         );
                       }
@@ -285,9 +287,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       weight:
                           workoutExercises[currentIndex + 1 + relativeIndex]
                               .weight,
-                      restMinutes:
+                      restSeconds:
                           workoutExercises[currentIndex + 1 + relativeIndex]
-                              .restMinutes,
+                              .restSeconds,
                       exerciseSwap: () {
                         setState(() {
                           final temp = workoutExercises[currentIndex];

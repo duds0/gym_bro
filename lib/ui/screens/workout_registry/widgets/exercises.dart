@@ -44,7 +44,7 @@ class _ExercisesState extends State<Exercises> {
                     series: workoutExercises[i].series,
                     reps: workoutExercises[i].repetitions,
                     weight: workoutExercises[i].weight,
-                    restMinutes: workoutExercises[i].restMinutes,
+                    restSeconds: workoutExercises[i].restSeconds,
                     weId: workoutExercises[i].id,
                     isEditing: false,
                     index: i,
