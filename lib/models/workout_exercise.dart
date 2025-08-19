@@ -27,7 +27,7 @@ class WorkoutExercise {
     series: map['series'],
     repetitions: map['repetitions'],
     weight: map['weight'],
-    restSeconds: map['rest_minutes'],
+    restSeconds: map['rest_seconds'],
   );
 
   Map<String, dynamic> toMap() => {
@@ -38,7 +38,7 @@ class WorkoutExercise {
     'series': series,
     'repetitions': repetitions,
     'weight': weight,
-    'rest_minutes': restSeconds,
+    'rest_seconds': restSeconds,
   };
 
   @override
