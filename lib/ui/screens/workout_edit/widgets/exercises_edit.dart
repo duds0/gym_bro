@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class ExercisesEdit extends StatefulWidget {
   final String workoutId;
-  final Future<void> updateWe;
+  final Future<void> Function() updateWe;
 
   const ExercisesEdit({
     super.key,

@@ -17,7 +17,7 @@ class ExerciseCard extends StatelessWidget {
   final double weight;
   final int restSeconds;
   final String? workoutId;
-  final Future<void>? updateWe;
+  final Future<void> Function()? updateWe;
   final void Function()? exerciseSwap;
 
   const ExerciseCard({
@@ -106,7 +106,7 @@ class ExerciseCard extends StatelessWidget {
                 listen: false,
               ).remove(weId, workoutId!);
 
-              await updateWe;
+              updateWe;
             },
             icon: Icon(Icons.delete_rounded, color: Colors.red.shade300),
           ),

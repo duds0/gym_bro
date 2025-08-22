@@ -40,9 +40,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
       listen: false,
     ).getByWorkoutId(widget.workoutId);
 
-    setState(() {
-      workoutExercises = we;
-    });
+    workoutExercises = we;
   }
 
   late Workout? actualWorkout;
@@ -53,9 +51,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
       listen: false,
     ).getById(widget.workoutId);
 
-    setState(() {
-      actualWorkout = workout;
-    });
+    actualWorkout = workout;
 
     _workoutNameController.text = actualWorkout!.name;
     _workoutFrequencyController.text = actualWorkout!.frequency.toString();
@@ -99,10 +95,6 @@ class _WorkoutEditState extends State<WorkoutEdit> {
         frequencyThisWeek: actualWorkout!.frequencyThisWeek,
       ),
     );
-  }
-
-  Future<void> updateWe() async {
-    await getWe();
   }
 
   @override
@@ -245,7 +237,6 @@ class _WorkoutEditState extends State<WorkoutEdit> {
                     } else {
                       if (_newExerciseFormKey.currentState!.validate()) {
                         await increaseExercise();
-                        setState(() {});
                         textControllers.clearExerciseTextFields();
                         timerPickerController.resetTimerPicked();
                       }
@@ -274,10 +265,7 @@ class _WorkoutEditState extends State<WorkoutEdit> {
 
                 SizedBox(height: 32),
 
-                ExercisesEdit(
-                  workoutId: widget.workoutId,
-                  updateWe: updateWe(),
-                ),
+                ExercisesEdit(workoutId: widget.workoutId, updateWe: getWe),
               ],
             ),
           ),
