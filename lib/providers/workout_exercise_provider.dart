@@ -8,11 +8,15 @@ class WorkoutExerciseProvider extends ChangeNotifier {
   List<WorkoutExercise> _workoutExercises = [];
   List<WorkoutExercise> get workoutExercises => _workoutExercises;
 
+  List<bool> _seriesDone = [];
+  List<bool> get seriesDone => _seriesDone;
+
   WorkoutExerciseProvider({required this.repository});
 
   Future<void> getWorkoutExercises(String workoutId) async {
     final List<WorkoutExercise> we = await repository.getByWorkoutId(workoutId);
     _workoutExercises = we;
+    resetSeriesDone(_workoutExercises.first.series);
     notifyListeners();
   }
 
@@ -32,5 +36,9 @@ class WorkoutExerciseProvider extends ChangeNotifier {
     await repository.deleteWe(id);
     getWorkoutExercises(workoutId);
     notifyListeners();
+  }
+
+  void resetSeriesDone(int seriesQtd) {
+    _seriesDone = List.filled(seriesQtd, false);
   }
 }

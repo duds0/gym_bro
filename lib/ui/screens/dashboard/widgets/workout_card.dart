@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gym_bro/database/repositories/workout_repository.dart';
+import 'package:gym_bro/providers/workout_provider.dart';
 import 'package:gym_bro/ui/screens/workout/workout_screen.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutCard extends StatelessWidget {
   final String workoutName;
@@ -54,7 +57,20 @@ class WorkoutCard extends StatelessWidget {
                         workoutName: workoutName,
                       ),
                 ),
-              );
+              ).then((callbackWorkoutId) async {
+                if (callbackWorkoutId != null) {
+                  final workout = await Provider.of<WorkoutRepository>(
+                    context,
+                    listen: false,
+                  ).getById(callbackWorkoutId);
+                  workout!.frequencyThisWeek += 1;
+
+                  await Provider.of<WorkoutProvider>(
+                    context,
+                    listen: false,
+                  ).update(workout);
+                }
+              });
             },
             icon: Icon(Icons.chevron_right_rounded, size: 32),
           ),
